@@ -93,9 +93,9 @@ namespace SavegameToolkit {
 
 
             //Now parse out cryo creature data
-            foreach (var cryo in this.Objects.Where(x => x.ClassName.ToString().Contains("Cryop")).ToList())
+            foreach (var cryo in this.Objects.Where(x => x.ClassName.ToString().Contains("Cryop")).Where(x => x.HasAnyProperty("CustomItemDatas")).ToList())
             {
-   
+
                 var contents = ((((((((Structs.StructPropertyList)((cryo.Properties[4] as Propertys.PropertyArray).Value as Arrays.ArkArrayStruct)[0]).Properties[6] as Propertys.PropertyStruct)
                 .Value as Structs.StructPropertyList).Properties[0] as Propertys.PropertyArray).Value as Arrays.ArkArrayStruct)[0] as Structs.StructPropertyList).Properties[0] as Propertys.PropertyArray).Value as Arrays.ArkArrayUInt8;
 
@@ -120,7 +120,7 @@ namespace SavegameToolkit {
                 }
 
             }
-                                
+
 
             OldNameList = archive.HasUnknownNames? archive.NameTable: null;
             HasUnknownData = archive.HasUnknownData;
@@ -236,7 +236,7 @@ namespace SavegameToolkit {
         private void readBinaryObjects(ArkArchive archive, ReadingOptions options) {
             if (options.GameObjects) {
                 int count = archive.ReadInt();
-                
+
 
                 Objects.Clear();
                 ObjectMap.Clear();
@@ -373,7 +373,7 @@ namespace SavegameToolkit {
             writeBinaryProperties(archive, options);
         }
 
-        public int CalculateSize() { 
+        public int CalculateSize() {
             // calculateHeaderSize checks for valid known versions
             NameSizeCalculator calculator = ArkArchive.GetNameSizer(SaveVersion > 5);
 
