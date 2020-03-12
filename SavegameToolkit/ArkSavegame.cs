@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SavegameToolkit.Arrays;
 using SavegameToolkit.Propertys;
+using SavegameToolkit.Structs;
 using SavegameToolkit.Types;
 
 
@@ -95,9 +97,13 @@ namespace SavegameToolkit {
             //Now parse out cryo creature data
             foreach (var cryo in this.Objects.Where(x => x.ClassName.ToString().Contains("Cryop")).Where(x => x.HasAnyProperty("CustomItemDatas")).ToList())
             {
-
-                var contents = ((((((((Structs.StructPropertyList)((cryo.Properties[4] as Propertys.PropertyArray).Value as Arrays.ArkArrayStruct)[0]).Properties[6] as Propertys.PropertyStruct)
-                .Value as Structs.StructPropertyList).Properties[0] as Propertys.PropertyArray).Value as Arrays.ArkArrayStruct)[0] as Structs.StructPropertyList).Properties[0] as Propertys.PropertyArray).Value as Arrays.ArkArrayUInt8;
+                var contents =
+                    (((((cryo.GetTypedProperty<PropertyArray>("CustomItemDatas").Value as ArkArrayStruct).First() as
+                                StructPropertyList).GetTypedProperty<PropertyStruct>("CustomDataBytes")
+                            .Value as StructPropertyList).GetTypedProperty<PropertyArray>("ByteArrays")
+                        .Value as ArkArrayStruct).First() as StructPropertyList)
+                    .GetTypedProperty<PropertyArray>("Bytes")
+                    .Value as ArkArrayInt8;
 
                 var cryoStream = new System.IO.MemoryStream(contents.ToArray<Byte>());
 
